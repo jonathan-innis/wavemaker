@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wavemaker.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "wavemaker.labels" . | nindent 4 }}
+  {{- with .Values.additionalAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "wavemaker.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "wavemaker.selectorLabels" . | nindent 8 }}
+      {{- with .Values.podLabels }}
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      annotations:
+        {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "wavemaker.serviceAccountName" . }}
+      {{- with .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
+      containers:
+        - name: controller
+          image: {{ include "wavemaker.controller.image" . }}
+          {{- with .Values.controller.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          args:
+            - "--interval={{ .Values.interval }}"
+            - "--duration={{ .Values.duration }}"
+            - "--count={{ .Values.count }}"
+            - "--requests={{ .Values.requests }}"

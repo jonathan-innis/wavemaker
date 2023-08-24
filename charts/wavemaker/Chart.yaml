@@ -1,0 +1,14 @@
+apiVersion: v2
+name: wavemaker
+description: A Helm chart for Wavemaker, an open-source tool for creating pod 'waves' in the cluster
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+keywords:
+  - waves
+  - pods
+  - wavemaker
+  - testing
+  - churn
+sources:
+  - https://github.com/jonathan-innis/tools/wavemaker/

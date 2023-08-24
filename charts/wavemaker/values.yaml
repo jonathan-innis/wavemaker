@@ -1,0 +1,60 @@
+# -- Overrides the chart's name.
+nameOverride: ""
+# -- Overrides the chart's computed fullname.
+fullnameOverride: ""
+# -- Additional labels to add into metadata.
+additionalLabels: {}
+# app: karpenter
+
+# -- Additional annotations to add into metadata.
+additionalAnnotations: {}
+# -- Image pull policy for Docker images.
+imagePullPolicy: IfNotPresent
+# -- Image pull secrets for Docker images.
+imagePullSecrets: []
+serviceAccount:
+  # -- Specifies if a ServiceAccount should be created.
+  create: true
+  # -- The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template.
+  name: ""
+  # -- Additional annotations for the ServiceAccount.
+  annotations: {}
+# -- The number of old ReplicaSets to retain to allow rollback.
+revisionHistoryLimit: 10
+# -- Strategy for updating the pod.
+strategy:
+  rollingUpdate:
+    maxUnavailable: 1
+# -- Additional labels for the pod.
+podLabels: {}
+# -- Additional annotations for the pod.
+podAnnotations: {}
+controller:
+  image:
+    # -- Repository path to the controller image.
+    repository: public.ecr.aws/karpenter/controller
+    # -- Tag of the controller image.
+    tag: v0.30.0-rc.0
+    # -- SHA256 digest of the controller image.
+    digest: sha256:06f08a2c9b5125a2da57936a5ccfb54e5796677e247fb0bb960e70e79242a147
+  # -- Resources for the controller pod.
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #  requests:
+  #    cpu: 1
+  #    memory: 1Gi
+  #  limits:
+  #    cpu: 1
+  #    memory: 1Gi
+# -- Interval is the time in-between waves
+interval: 1m
+# -- Duration is the length of time that the wave lasts
+duration: 1m
+# -- Count is the number of pods in the wave
+count: 100
+# -- Requests are the resource requests assigned to all pods in the wave
+requests: "cpu=100m,memory=100Mi"
